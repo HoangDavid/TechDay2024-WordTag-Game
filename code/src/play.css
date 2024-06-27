@@ -1,0 +1,84 @@
+@keyframes flickerAnimation {
+    0%, 100% { 
+      text-shadow: 
+        0 0 6px #EEE, /* Reduced intensity */
+        0 0 8px #EEE, /* Reduced intensity */
+        0 0 10px #5A4EAE, 
+        0 0 12px #5A4EAE, 
+        0 0 14px #5A4EAE, 
+        0 0 16px #5A4EAE, 
+        0 0 18px #5A4EAE; 
+    }
+    50% { 
+      text-shadow: 
+        0 0 2px #EEE, /* Reduced intensity */
+        0 0 4px #EEE, /* Reduced intensity */
+        0 0 6px #5A4EAE, 
+        0 0 8px #5A4EAE, 
+        0 0 10px #5A4EAE, 
+        0 0 12px #5A4EAE, 
+        0 0 14px #5A4EAE; 
+    }
+}
+  
+
+.title {
+    position: relative;
+    text-align: center;
+    font-weight: 800;
+    font-size: 35px;
+    display: block;
+    text-shadow: 0 0 8px #5A4EAE, 0 0 16px #5A4EAE, 0 0 24px #5A4EAE, 0 0 32px #5A4EAE, 0 0 40px #5A4EAE, 0 0 48px #5A4EAE, 0 0 54px #5A4EAE;
+    animation: flickerAnimation 3s infinite;
+}
+
+.cursor {
+  display: inline-block;
+  width: 1ch;
+  animation: flicker 0.5s infinite;
+  vertical-align: middle;
+  left:2px
+}
+
+
+
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.talk-bubble {
+	margin: 40px;
+  display: inline-block;
+  position: relative;
+	height: auto;
+	background-color: #A47CF3;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  color: #0D042A;
+  font-size: 14px;
+  font-weight: 700;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 0px 15px 15px 0px;
+}
+
+.tri-right.left-in:after{
+	content: ' ';
+	position: absolute;
+	width: 0;
+	height: 0;
+  left: -23px;
+	right: auto;
+  top: 0px;
+	bottom: auto;
+	border: 12px solid;
+	border-color: #A47CF3 #A47CF3 transparent transparent;
+}
