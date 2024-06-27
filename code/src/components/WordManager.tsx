@@ -1,13 +1,13 @@
-import dict from '../assets/tudien.txt'
+import dict from '../assets/words.txt'
 import { useState, useEffect } from 'react'
 
 export interface Word{
     [key: string]: string[]
 }
 
-function Game(){
+function WordManger(){
     const [words, setWords] = useState<Word>({})
-
+    
     // Processing the file
     useEffect(() => {
         
@@ -18,7 +18,8 @@ function Game(){
             const dict: Word = {}
 
             for (let i=0; i < tokens.length - 1; i++){
-                const word: string[] = tokens[i].trim().split(' ')
+                const parsedLine = JSON.parse(tokens[i])
+                const word = parsedLine.text.trim().split(' ');
                 if (word.length == 2){
                     if (dict[word[0]]){
                         dict[word[0].toLowerCase()].push(word[1].toLowerCase())
@@ -37,4 +38,4 @@ function Game(){
 }
 
 
-export default Game
+export default WordManger
