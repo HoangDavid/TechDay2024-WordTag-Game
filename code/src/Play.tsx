@@ -10,7 +10,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import './play.css'
 import bot from './assets/bot.gif'
-import CursorSVG from './assets/cursor.svg'
 
 const instructions= [
     'Chào mừng bạn đến AI là Vua Tiếng Việt!',
@@ -253,6 +252,7 @@ function Play(){
                 }, 4000)
             }else if (CURRENT_STATE == 'start' && instruction_index == instructions.length - 1){
                 setTimeout(() => {
+                    setPrefix('')
                     SET_CURRENT_STATE('play')
                 }, 4000)
             }
@@ -261,16 +261,16 @@ function Play(){
 
       
         return () => clearInterval(intervalId);
-      }, [instructions, instruction_index, prefix, BotPrefix, CURRENT_STATE]);
+      }, [instructions, instruction_index, BotPrefix, CURRENT_STATE]);
 
     return (
     <>
         <Box sx={main}>
             <Box sx={container}>
+            <div style={{position: 'absolute', left: 0, top: 15, fontSize: 20, fontWeight: 800}}>Correct: {correctAsnwer} / 15</div>
                 <div className="title" style={{marginTop: '2%'}}>TECHDAY 2024</div>
                 <div className="title">NỐI TỪ</div>
                 <Timer>{timer}</Timer>
-                Correct: {correctAsnwer} / 15
                 <div style={{display: 'block',marginLeft: '10%'}}>
                     <img src={bot} alt="" style={{verticalAlign: 'middle'}}/>
                     <div className="talk-bubble tri-right left-in">
