@@ -115,6 +115,7 @@ function Play(){
     const [isCorrect, setIsCorrect] = useState<boolean>(false)
     const [enterPressed, setEnterPressed] = useState(false);
     const [correctAsnwer, setCorrectAnswer] = useState<number>(0)
+    const [checkedAnswer, setCheckedAnswer] = useState<string[]>([])
 
     const [BotPrefix, setBotPrefix] = useState<string>('')
     const [showAnswer, setShowAnswer] = useState<string>('')
@@ -147,6 +148,7 @@ function Play(){
                 }
             }
             
+            console.log(answer)
             const value = words[key] as string[]
             return [key, value]
 
@@ -173,9 +175,10 @@ function Play(){
     const [answer, setAnswer] = useState('')
     const checkAnswer = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && CURRENT_STATE === 'play' && answer !== ''){
-            if (tagAnswer.includes(answer)){
+            if (tagAnswer.includes(answer) && !checkedAnswer.includes(prefix + answer)){
                 setIsCorrect(true)
                 setEnterPressed(prev => !prev)
+                setCheckedAnswer([...checkedAnswer, prefix + answer])
             }else{
                 setAnswer('')
             }
@@ -239,6 +242,7 @@ function Play(){
     const toggleDialog = () => {
         setOpen(!open)
         SET_CURRENT_STATE('start')
+        setCheckedAnswer([])
         setCorrectAnswer(0)
         instruction_index = 0
     }
@@ -255,6 +259,7 @@ function Play(){
         }else if (CURRENT_STATE == 'play'){
             stringResponse = `Từ tiếp theo là: ${BotPrefix} ${prefix}`
         }
+
         let i = 0
         const intervalId = setInterval(() => {
           setDisplayResponse(stringResponse.slice(0, i));
@@ -270,7 +275,7 @@ function Play(){
                     instruction_index++;
                     setDisplayResponse('');
                     setCompletedTyping(false);
-                }, 200)
+                }, 4000)
             }else if (CURRENT_STATE == 'start' && instruction_index == instructions.length - 1){
                 setTimeout(() => {
                     setPrefix('')
@@ -282,7 +287,7 @@ function Play(){
 
       
         return () => clearInterval(intervalId);
-      }, [instructions, instruction_index, BotPrefix, CURRENT_STATE]);
+      }, [instruction_index, BotPrefix, CURRENT_STATE]);
 
     return (
     <>
@@ -307,7 +312,7 @@ function Play(){
                         </span>
                     </div>
                     { CURRENT_STATE == 'start' && (<div>
-                        <Button variant="contained" sx={{color: 'white', marginLeft: '2%'}} onClick={skipInstruction}>Skip</Button>
+                        <Button variant="contained" sx={{backgroundColor: 'green',color: 'white', marginLeft: '2%'}} onClick={skipInstruction}>Start</Button>
                     </div>)}
                 </div>
                 <Box sx={playzone}>
@@ -349,7 +354,7 @@ function Play(){
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText sx={{fontSize: 15, textAlign:'center'}}id="alert-dialog-description">
-                        {CURRENT_STATE == 'lose' ? `Đáp án có thể là: ${prefix} ${showAnswer}` : ''}
+                        {CURRENT_STATE == 'lose' ? (<span>Đáp án có thể là: <strong>{prefix} {showAnswer}</strong></span>) : ''}
                     </DialogContentText>
                     <DialogContentText sx={{fontSize: 15, textAlign:'center'}}id="alert-dialog-description">
                         {CURRENT_STATE == 'lose' ? 'Bạn đã thua cuộc, hãy thử lại nhé =))' : ''}

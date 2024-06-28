@@ -16864,7 +16864,7 @@
 {"text": "lai căng", "source": "tudientv"}
 {"text": "lai dắt", "source": "tudientv"}
 {"text": "lái đò", "source": "tudientv"}
-{"text": "lại gan", "source": "tudientv"}
+{"text": "lại gần", "source": "tudientv"}
 {"text": "lại gạo", "source": "tudientv"}
 {"text": "lai giống", "source": "tudientv"}
 {"text": "lại giống", "source": "tudientv"}
