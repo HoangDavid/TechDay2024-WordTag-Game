@@ -21,6 +21,8 @@ const instructions= [
 ]
 let instruction_index = 0
 
+const TIMER = 15
+const TIME_CONSTRAINT = 14
 
 function Play(){
     // Styling
@@ -115,29 +117,48 @@ function Play(){
     const [correctAsnwer, setCorrectAnswer] = useState<number>(0)
 
     const [BotPrefix, setBotPrefix] = useState<string>('')
+    const [showAnswer, setShowAnswer] = useState<string>('')
 
     // Timer and time constraints
-    const [timer, setTimer] = useState(15)
-    const [timeConstraint, setTimeConstraint] = useState(14)
+    const [timer, setTimer] = useState(TIMER)
+    const [timeConstraint, setTimeConstraint] = useState(TIME_CONSTRAINT)
+
+    // Skip instruction and start game
+    const skipInstruction = () => {
+        if (CURRENT_STATE == 'start'){
+            SET_CURRENT_STATE('play')
+            setPrefix('')
+        }
+    }
 
     const getRandomWord = () => {
-        const keys = Object.keys(words).filter(key => words[key].length > 10)
-        const k = keys[Math.floor(Math.random() * keys.length)]
-        const v = words[k] as string[]
-        setBotPrefix(k)
+        if (BotPrefix === '' || !(answer in words)){
+            const keys = Object.keys(words).filter(key => words[key].length > 10)
+            const k = keys[Math.floor(Math.random() * keys.length)]
+            const v = words[k] as string[]
+            setBotPrefix(k)
 
-        let tmp = 0
-        let key = ''
-        for (let i = 0; i < v.length; i++){
-            if (v[i] in words && words[v[i]].length > tmp){
-                tmp = words[v[i]].length
-                key = v[i]
+            let tmp = 0
+            let key = ''
+            for (let i = 0; i < v.length; i++){
+                if (v[i] in words && words[v[i]].length > tmp){
+                    tmp = words[v[i]].length
+                    key = v[i]
+                }
             }
+            
+            const value = words[key] as string[]
+            return [key, value]
+
+        }else{
+            const v = words[answer].filter(key => key in words)
+            const key = v[Math.floor(Math.random() * v.length)]
+
+            const value = words[key] as string[]
+            setBotPrefix(answer)
+            setPrefix(key)
+            return [key, value]
         }
-        
-        const value = words[key] as string[]
-        
-        return [key, value]
     }
     // Initialize a word
     useEffect(() => {
@@ -151,11 +172,10 @@ function Play(){
     // Get player answer
     const [answer, setAnswer] = useState('')
     const checkAnswer = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter'){
+        if (e.key === 'Enter' && CURRENT_STATE === 'play' && answer !== ''){
             if (tagAnswer.includes(answer)){
                 setIsCorrect(true)
                 setEnterPressed(prev => !prev)
-                setAnswer('')
             }else{
                 setAnswer('')
             }
@@ -179,8 +199,9 @@ function Play(){
                 if (!isCorrect){
                     setOpen(true)
                     SET_CURRENT_STATE('lose')
-                    setTimer(15)
-                    setTimeConstraint(14)
+                    setTimer(TIMER)
+                    setTimeConstraint(TIME_CONSTRAINT)
+                    setShowAnswer(tagAnswer[0])
                 }
                 setAnswer('')
             }
@@ -198,8 +219,8 @@ function Play(){
             if (correctAsnwer == 14){
                 setOpen(true)
                 SET_CURRENT_STATE('win')
-                setTimer(15)
-                setTimeConstraint(14)
+                setTimer(TIMER)
+                setTimeConstraint(TIME_CONSTRAINT)
             }else{
                 setTimer(timeConstraint)
                 if (timeConstraint > 5){
@@ -249,7 +270,7 @@ function Play(){
                     instruction_index++;
                     setDisplayResponse('');
                     setCompletedTyping(false);
-                }, 4000)
+                }, 200)
             }else if (CURRENT_STATE == 'start' && instruction_index == instructions.length - 1){
                 setTimeout(() => {
                     setPrefix('')
@@ -285,6 +306,9 @@ function Play(){
                         </svg>}
                         </span>
                     </div>
+                    { CURRENT_STATE == 'start' && (<div>
+                        <Button variant="contained" sx={{color: 'white', marginLeft: '2%'}} onClick={skipInstruction}>Skip</Button>
+                    </div>)}
                 </div>
                 <Box sx={playzone}>
                     <Prefix>
@@ -324,6 +348,9 @@ function Play(){
                     {CURRENT_STATE == 'win' ? 'Chúc mừng bạn đã chiến thắng!': ''}
                     </DialogTitle>
                     <DialogContent>
+                    <DialogContentText sx={{fontSize: 15, textAlign:'center'}}id="alert-dialog-description">
+                        {CURRENT_STATE == 'lose' ? `Đáp án có thể là: ${prefix} ${showAnswer}` : ''}
+                    </DialogContentText>
                     <DialogContentText sx={{fontSize: 15, textAlign:'center'}}id="alert-dialog-description">
                         {CURRENT_STATE == 'lose' ? 'Bạn đã thua cuộc, hãy thử lại nhé =))' : ''}
                     </DialogContentText>
